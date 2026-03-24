@@ -11,344 +11,265 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
 
 :root {
-  --bg:      #0e0f11;
-  --surf:    #16181c;
-  --surf2:   #1e2128;
-  --border:  #2a2d35;
-  --accent:  #f0c040;
-  --danger:  #ff5f5f;
-  --text:    #e8eaf0;
-  --muted:   #6b7280;
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-top:    env(safe-area-inset-top, 0px);
+  --bg:     #0e0f11;
+  --surf:   #16181c;
+  --surf2:  #1e2128;
+  --border: #2a2d35;
+  --acc:    #f0c040;
+  --danger: #ff5f5f;
+  --green:  #7fff8a;
+  --blue:   #4da8ff;
+  --text:   #e8eaf0;
+  --muted:  #6b7280;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 
-html, body {
-  height: 100%; width: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Mono', monospace;
-  overflow: hidden;
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
+html,body{
+  height:100%;width:100%;
+  background:var(--bg);color:var(--text);
+  font-family:'DM Mono',monospace;
+  overflow:hidden;touch-action:none;
+  user-select:none;-webkit-user-select:none;
 }
 
-/* ─── LAYOUT ─── */
-#app {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding-top: var(--safe-top);
+#app{display:flex;flex-direction:column;height:100%;padding-top:env(safe-area-inset-top,0px)}
+
+/* ── HEADER ── */
+#hdr{
+  display:flex;align-items:center;gap:6px;
+  padding:0 12px;height:50px;
+  background:var(--surf);border-bottom:1px solid var(--border);
+  flex-shrink:0;overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+#hdr::-webkit-scrollbar{display:none}
+
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--acc);white-space:nowrap;flex-shrink:0}
+.logo em{color:var(--text);opacity:.3;font-style:normal}
+.hdiv{width:1px;height:20px;background:var(--border);flex-shrink:0}
+
+/* tool buttons */
+.tbtn{
+  display:flex;align-items:center;gap:5px;padding:6px 10px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;
+  border-radius:7px;cursor:pointer;white-space:nowrap;flex-shrink:0;
+  -webkit-appearance:none;
+}
+.tbtn:active,.tbtn.active{background:var(--acc);border-color:var(--acc);color:#000;font-weight:500}
+.tbtn.calib-active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:500}
+.tbtn kbd{background:rgba(0,0,0,.25);border-radius:3px;padding:0 4px;font-size:9px;opacity:.7;font-family:inherit;color:inherit}
+
+/* scale display (right side of header) */
+.scale-wrap{display:flex;align-items:center;gap:5px;margin-left:auto;flex-shrink:0}
+.scale-wrap label{font-size:10px;color:var(--muted);white-space:nowrap}
+
+.scale-pill{
+  display:flex;align-items:center;gap:4px;
+  background:var(--surf2);border:1px solid var(--border);
+  border-radius:7px;padding:4px 8px;cursor:pointer;
+  font-size:11px;white-space:nowrap;
+}
+.scale-pill:hover{border-color:var(--acc)}
+.scale-pill.calibrated{border-color:var(--green);color:var(--green)}
+.scale-pill.uncalibrated{border-color:var(--danger);color:var(--danger)}
+.scale-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+select.unit-sel{
+  background:var(--surf2);border:1px solid var(--border);color:var(--text);
+  font-family:'DM Mono',monospace;font-size:11px;padding:4px 6px;
+  border-radius:6px;-webkit-appearance:none;appearance:none;cursor:pointer;
+}
+select.unit-sel:focus{outline:none;border-color:var(--acc)}
+
+/* ── MAIN ── */
+#main{display:flex;flex:1;overflow:hidden}
+
+/* ── PAGE PANEL ── */
+#pagePanel{
+  width:78px;background:var(--surf);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;
+  flex-shrink:0;padding:6px 4px;gap:2px;-webkit-overflow-scrolling:touch;
+}
+#pagePanel::-webkit-scrollbar{width:2px}
+#pagePanel::-webkit-scrollbar-thumb{background:var(--border)}
+
+.tw{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border-color .12s,background .12s;flex-shrink:0}
+.tw.active{border-color:var(--acc);background:rgba(240,192,64,.06)}
+.tbox{width:58px;height:44px;background:#aaa;border-radius:3px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+.tbox canvas{display:block;max-width:58px;max-height:44px}
+.tbadge{position:absolute;top:2px;right:2px;background:var(--acc);color:#000;font-size:7px;font-weight:700;border-radius:3px;padding:1px 3px;line-height:1.4;display:none}
+.tnum{font-size:9px;color:var(--muted)}
+.tw.active .tnum{color:var(--acc)}
+
+/* ── CANVAS WRAP ── */
+#cvsWrap{flex:1;position:relative;overflow:hidden;background:#191b21}
+
+.drop-ovl{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:12px;
+  z-index:5;pointer-events:none;
+  background:radial-gradient(ellipse at center,#1c1f26 0%,#0e0f11 100%);
+  text-align:center;padding:24px;
+}
+.drop-ovl.hidden{display:none}
+.drop-icon{font-size:44px;opacity:.15}
+.drop-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--muted)}
+.drop-sub{font-size:11px;color:var(--muted);opacity:.4;line-height:1.9}
+.drop-btn{padding:10px 24px;background:var(--acc);color:#000;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;cursor:pointer;pointer-events:all;margin-top:4px}
+
+.load-ovl{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(10,11,14,.85);z-index:30}
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--acc);border-radius:50%;animation:spin .65s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-txt{font-size:11px;color:var(--muted)}
+
+canvas#dc{position:absolute;top:0;left:0;touch-action:none}
+canvas#oc{position:absolute;top:0;left:0;pointer-events:none}
+
+/* calibration banner */
+#calibBanner{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  background:var(--blue);color:#fff;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+  padding:8px 16px;border-radius:8px;z-index:20;
+  white-space:nowrap;display:none;pointer-events:none;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
 }
 
-/* ─── HEADER ─── */
-#hdr {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 12px;
-  height: 50px;
-  background: var(--surf);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-#hdr::-webkit-scrollbar { display: none; }
-
-.logo {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 16px;
-  color: var(--accent);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.logo em { color: var(--text); opacity: 0.3; font-style: normal; font-weight: 700; }
-
-.hdiv { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
-
-.tbtn {
-  display: flex; align-items: center; gap: 5px;
-  padding: 6px 10px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  border-radius: 7px;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: border-color 0.12s, color 0.12s, background 0.12s;
-  -webkit-appearance: none;
-}
-.tbtn:active, .tbtn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 500; }
-
-.scale-wrap {
-  display: flex; align-items: center; gap: 5px;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-.scale-wrap label { font-size: 10px; color: var(--muted); white-space: nowrap; }
-
-input[type=number], select {
-  background: var(--surf2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  border-radius: 6px;
-  -webkit-appearance: none;
-  appearance: none;
-}
-#scaleIn { padding: 5px 6px; width: 60px; text-align: right; }
-#scaleIn:focus { outline: none; border-color: var(--accent); }
-#unitIn  { padding: 5px 6px; }
-#unitIn:focus { outline: none; border-color: var(--accent); }
-
-/* ─── MAIN ─── */
-#main { display: flex; flex: 1; overflow: hidden; }
-
-/* ─── PAGE PANEL ─── */
-#pagePanel {
-  width: 80px;
-  background: var(--surf);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  overflow-x: hidden;
-  flex-shrink: 0;
-  padding: 6px 4px;
-  gap: 2px;
-  -webkit-overflow-scrolling: touch;
-}
-#pagePanel::-webkit-scrollbar { width: 2px; }
-#pagePanel::-webkit-scrollbar-thumb { background: var(--border); }
-
-.tw {
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 5px 2px;
-  border-radius: 6px; cursor: pointer;
-  border: 2px solid transparent;
-  transition: border-color 0.12s, background 0.12s;
-  flex-shrink: 0;
-}
-.tw.active { border-color: var(--accent); background: rgba(240,192,64,0.06); }
-
-.tbox {
-  width: 60px; height: 46px;
-  background: #aaa;
-  border-radius: 3px; overflow: hidden;
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-}
-.tbox canvas { display: block; max-width: 60px; max-height: 46px; }
-
-.tbadge {
-  position: absolute; top: 2px; right: 2px;
-  background: var(--accent); color: #000;
-  font-size: 7px; font-weight: 700; border-radius: 3px;
-  padding: 1px 3px; line-height: 1.4; display: none;
+/* finish polygon button */
+#finishBtn{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  background:var(--acc);color:#000;border:none;
+  padding:10px 20px;border-radius:8px;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:12px;
+  cursor:pointer;z-index:20;display:none;white-space:nowrap;
 }
 
-.tnum { font-size: 9px; color: var(--muted); }
-.tw.active .tnum { color: var(--accent); }
+.zoom-ctrl{position:absolute;bottom:14px;left:10px;display:flex;flex-direction:column;gap:3px;z-index:10}
+.zbtn{width:34px;height:34px;background:var(--surf);border:1px solid var(--border);color:var(--text);font-size:16px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.zbtn:active{border-color:var(--acc);color:var(--acc)}
+.zlbl{font-size:9px;color:var(--muted);text-align:center;padding:1px 0}
 
-/* ─── CANVAS WRAP ─── */
-#cvsWrap {
-  flex: 1; position: relative; overflow: hidden;
-  background: #191b21;
+/* ── CALIBRATION MODAL ── */
+#calibModal{
+  position:fixed;inset:0;z-index:100;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.7);padding:20px;
+}
+#calibModal.open{display:flex}
+.modal-box{
+  background:var(--surf);border:1px solid var(--border);
+  border-radius:12px;padding:24px;width:100%;max-width:360px;
+  display:flex;flex-direction:column;gap:16px;
+}
+.modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--acc)}
+.modal-desc{font-size:11px;color:var(--muted);line-height:1.8}
+.modal-row{display:flex;align-items:center;gap:8px}
+.modal-row label{font-size:11px;color:var(--muted);white-space:nowrap;min-width:80px}
+.modal-row input{
+  flex:1;background:var(--surf2);border:1px solid var(--border);
+  color:var(--text);font-family:'DM Mono',monospace;font-size:13px;
+  padding:8px 10px;border-radius:7px;-webkit-appearance:none;
+}
+.modal-row input:focus{outline:none;border-color:var(--acc)}
+.modal-row select{
+  background:var(--surf2);border:1px solid var(--border);
+  color:var(--text);font-family:'DM Mono',monospace;font-size:13px;
+  padding:8px 10px;border-radius:7px;-webkit-appearance:none;cursor:pointer;
+}
+.modal-row select:focus{outline:none;border-color:var(--acc)}
+.modal-btns{display:flex;gap:8px}
+.modal-btn{
+  flex:1;padding:10px;border:none;border-radius:8px;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:12px;cursor:pointer;
+}
+.modal-btn.primary{background:var(--acc);color:#000}
+.modal-btn.secondary{background:var(--surf2);color:var(--muted);border:1px solid var(--border)}
+/* scale preset section inside modal */
+.modal-sep{width:100%;height:1px;background:var(--border)}
+.modal-sub{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.preset-grid{display:flex;flex-wrap:wrap;gap:6px}
+.preset-btn{
+  padding:5px 10px;background:var(--surf2);border:1px solid var(--border);
+  color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;
+  border-radius:5px;cursor:pointer;
+}
+.preset-btn:active,.preset-btn.sel{background:var(--acc);border-color:var(--acc);color:#000;font-weight:500}
+
+/* ── SIDEBAR ── */
+#sidebar{
+  width:270px;background:var(--surf);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;
 }
 
-.drop-ovl {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-  z-index: 5; pointer-events: none;
-  background: radial-gradient(ellipse at center, #1c1f26 0%, #0e0f11 100%);
-  text-align: center; padding: 24px;
-}
-.drop-ovl.hidden { display: none; }
-.drop-icon { font-size: 44px; opacity: 0.15; }
-.drop-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--muted); }
-.drop-sub { font-size: 11px; color: var(--muted); opacity: 0.4; line-height: 1.9; }
-.drop-btn {
-  padding: 10px 24px; background: var(--accent); color: #000; border: none;
-  border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
-  cursor: pointer; pointer-events: all; margin-top: 4px;
-}
-
-.load-ovl {
-  position: absolute; inset: 0; display: none;
-  align-items: center; justify-content: center; flex-direction: column; gap: 10px;
-  background: rgba(10,11,14,0.85); z-index: 30;
-}
-.spinner {
-  width: 28px; height: 28px;
-  border: 3px solid var(--border); border-top-color: var(--accent);
-  border-radius: 50%; animation: spin 0.65s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.load-txt { font-size: 11px; color: var(--muted); }
-
-#dc { position: absolute; top: 0; left: 0; touch-action: none; }
-#oc { position: absolute; top: 0; left: 0; pointer-events: none; }
-
-/* finish-area button (mobile) */
-#finishBtn {
-  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
-  background: var(--accent); color: #000; border: none;
-  padding: 10px 20px; border-radius: 8px;
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 12px;
-  cursor: pointer; z-index: 20; display: none; white-space: nowrap;
-}
-
-.zoom-ctrl {
-  position: absolute; bottom: 14px; left: 10px;
-  display: flex; flex-direction: column; gap: 3px; z-index: 10;
-}
-.zbtn {
-  width: 34px; height: 34px;
-  background: var(--surf); border: 1px solid var(--border); color: var(--text);
-  font-size: 16px; border-radius: 7px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-}
-.zbtn:active { border-color: var(--accent); color: var(--accent); }
-.zlbl { font-size: 9px; color: var(--muted); text-align: center; padding: 1px 0; }
-
-#coords {
-  position: absolute; bottom: 14px; left: 56px;
-  font-size: 9px; color: var(--muted);
-  background: var(--surf); padding: 4px 7px;
-  border-radius: 4px; border: 1px solid var(--border);
-  display: none; /* hidden on mobile */
-}
-
-/* ─── SIDEBAR / BOTTOM SHEET ─── */
-/* Desktop sidebar */
-#sidebar {
-  width: 272px;
-  background: var(--surf);
-  border-left: 1px solid var(--border);
-  display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
-}
-
-/* Mobile: sidebar becomes a bottom-anchored panel */
-@media (max-width: 700px) {
-  #hdr { height: 48px; }
-  #pagePanel { width: 70px; }
-  .tbox { width: 54px; height: 42px; }
-
-  #sidebar {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    width: 100%; height: 42vh;
-    border-left: none; border-top: 2px solid var(--border);
-    z-index: 50;
-    transform: translateY(calc(100% - 46px));
-    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-    padding-bottom: var(--safe-bottom);
+@media(max-width:700px){
+  #sidebar{
+    position:fixed;bottom:0;left:0;right:0;width:100%;height:44vh;
+    border-left:none;border-top:2px solid var(--border);z-index:50;
+    transform:translateY(calc(100% - 46px));
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+    padding-bottom:env(safe-area-inset-bottom,0px);
   }
-  #sidebar.open { transform: translateY(0); }
-
-  #cvsWrap { margin-bottom: 46px; }
-
-  #coords { display: none !important; }
-
-  .tbtn kbd { display: none; }
+  #sidebar.open{transform:translateY(0)}
+  #cvsWrap{margin-bottom:46px}
+  .tbtn kbd{display:none}
+  #pagePanel{width:68px}
+  .tbox{width:52px;height:40px}
 }
 
-/* Sidebar handle (mobile) */
-#sbHandle {
-  display: none;
-  align-items: center; justify-content: center;
-  height: 46px; cursor: pointer; flex-shrink: 0;
-  border-bottom: 1px solid var(--border);
-  gap: 8px;
-}
-.sb-handle-bar { width: 36px; height: 4px; background: var(--border); border-radius: 2px; }
-.sb-handle-lbl { font-size: 10px; color: var(--muted); font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 1px; }
-@media (max-width: 700px) { #sbHandle { display: flex; } }
+#sbHandle{display:none;align-items:center;justify-content:center;height:46px;cursor:pointer;flex-shrink:0;border-bottom:1px solid var(--border);gap:8px}
+.sb-bar{width:36px;height:4px;background:var(--border);border-radius:2px}
+.sb-lbl{font-size:10px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:1px}
+@media(max-width:700px){#sbHandle{display:flex}}
 
-.panel-hdr {
-  padding: 10px 12px 8px;
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px;
-  letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-}
-.clr-btn {
-  background: none; border: 1px solid var(--border); color: var(--muted);
-  font-size: 9px; font-family: 'DM Mono', monospace; padding: 3px 8px;
-  border-radius: 4px; cursor: pointer;
-}
-.clr-btn:active { border-color: var(--danger); color: var(--danger); }
+.panel-hdr{padding:10px 12px 8px;font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.clr-btn{background:none;border:1px solid var(--border);color:var(--muted);font-size:9px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:4px;cursor:pointer}
+.clr-btn:active{border-color:var(--danger);color:var(--danger)}
 
-.color-strip {
-  display: flex; gap: 5px; padding: 7px 12px;
-  border-bottom: 1px solid var(--border); flex-wrap: wrap; flex-shrink: 0;
-}
-.sw {
-  width: 18px; height: 18px; border-radius: 50%; cursor: pointer;
-  border: 2px solid transparent; flex-shrink: 0; transition: transform 0.1s;
-}
-.sw:active { transform: scale(1.2); }
-.sw.active { border-color: #fff; }
+.color-strip{display:flex;gap:5px;padding:7px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0}
+.sw{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0;transition:transform .1s}
+.sw:active{transform:scale(1.2)}
+.sw.active{border-color:#fff}
 
-.ftabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.ftab {
-  flex: 1; padding: 7px 2px; font-size: 9px; text-align: center;
-  cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent;
-  letter-spacing: 0.3px;
-}
-.ftab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.ftabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.ftab{flex:1;padding:7px 2px;font-size:9px;text-align:center;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;letter-spacing:.3px}
+.ftab.active{color:var(--acc);border-bottom-color:var(--acc)}
 
-.mlist { flex: 1; overflow-y: auto; padding: 6px; -webkit-overflow-scrolling: touch; }
-.mlist::-webkit-scrollbar { width: 3px; }
-.mlist::-webkit-scrollbar-thumb { background: var(--border); }
+.mlist{flex:1;overflow-y:auto;padding:6px;-webkit-overflow-scrolling:touch}
+.mlist::-webkit-scrollbar{width:3px}
+.mlist::-webkit-scrollbar-thumb{background:var(--border)}
 
-.empty-msg { padding: 24px 12px; text-align: center; font-size: 10px; color: var(--muted); opacity: 0.45; line-height: 2; }
+.empty-msg{padding:24px 12px;text-align:center;font-size:10px;color:var(--muted);opacity:.45;line-height:2}
 
-.mi {
-  padding: 8px 9px; border: 1px solid var(--border);
-  border-radius: 7px; margin-bottom: 5px; cursor: pointer;
-}
-.mi.sel { border-color: var(--accent); background: rgba(240,192,64,0.04); }
-.mi-hdr { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-.mdot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.mlbl { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.mpg { font-size: 8px; color: var(--muted); background: var(--surf2); padding: 1px 5px; border-radius: 3px; flex-shrink: 0; }
-.mdel { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 0 3px; line-height: 1; flex-shrink: 0; }
-.mval { font-size: 15px; font-weight: 500; letter-spacing: -0.5px; margin-bottom: 1px; }
-.mtyp { font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.mi{padding:8px 9px;border:1px solid var(--border);border-radius:7px;margin-bottom:5px;cursor:pointer}
+.mi.sel{border-color:var(--acc);background:rgba(240,192,64,.04)}
+.mi-hdr{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.mdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.mlbl{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mpg{font-size:8px;color:var(--muted);background:var(--surf2);padding:1px 5px;border-radius:3px;flex-shrink:0}
+.mdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 3px;line-height:1;flex-shrink:0}
+.mdel:active{color:var(--danger)}
+.mval{font-size:15px;font-weight:500;letter-spacing:-.5px;margin-bottom:1px}
+.mtyp{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 
-.summary { border-top: 1px solid var(--border); padding: 8px 12px; flex-shrink: 0; }
-.sr { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; font-size: 10px; }
-.sl { color: var(--muted); }
-.sv { font-weight: 500; }
-.sr.tot { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 7px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; }
-.sr.tot .sv { color: var(--accent); }
+.summary{border-top:1px solid var(--border);padding:8px 12px;flex-shrink:0}
+.sr{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;font-size:10px}
+.sl{color:var(--muted)}
+.sv{font-weight:500}
+.sr.tot{border-top:1px solid var(--border);margin-top:4px;padding-top:7px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700}
+.sr.tot .sv{color:var(--acc)}
 
-.exp-btn {
-  margin: 6px 12px 10px;
-  padding: 9px; background: var(--accent); border: none; border-radius: 7px;
-  color: #000; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 11px;
-  cursor: pointer; width: calc(100% - 24px); flex-shrink: 0;
-}
+.exp-btn{margin:6px 12px 10px;padding:9px;background:var(--acc);border:none;border-radius:7px;color:#000;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;cursor:pointer;width:calc(100% - 24px);flex-shrink:0}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- HEADER -->
   <header id="hdr">
     <div class="logo">TAKE<em>OFF</em></div>
     <div class="hdiv"></div>
+
     <button class="tbtn active" id="tPan"    onclick="setTool('pan')">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg>
       Pan <kbd>1</kbd>
@@ -365,33 +286,42 @@ input[type=number], select {
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>
       Rect <kbd>4</kbd>
     </button>
+
     <div class="hdiv"></div>
+
+    <!-- Calibrate button -->
+    <button class="tbtn" id="tCalib" onclick="setTool('calib')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M3 12h3M18 12h3M12 3v3M12 18v3"/></svg>
+      Calibrate <kbd>5</kbd>
+    </button>
+
+    <div class="hdiv"></div>
+
+    <!-- Scale display pill -->
     <div class="scale-wrap">
-      <label>1:</label>
-      <input type="number" id="scaleIn" value="100" min="0.0001" step="any" inputmode="decimal">
-      <select id="unitIn">
+      <div class="scale-pill uncalibrated" id="scalePill" onclick="openCalibModal()" title="Click to set scale">
+        <div class="scale-dot" id="scaleDot" style="background:var(--danger)"></div>
+        <span id="scaleLabel">Not calibrated</span>
+      </div>
+      <select class="unit-sel" id="unitIn" onchange="onUnitChange()">
         <option value="mm">mm</option>
         <option value="cm">cm</option>
         <option value="m" selected>m</option>
         <option value="in">in</option>
         <option value="ft">ft</option>
       </select>
-      <label style="font-size:9px;color:var(--muted)">/px</label>
     </div>
   </header>
 
-  <!-- MAIN -->
   <div id="main">
 
-    <!-- PAGE THUMBNAILS -->
     <div id="pagePanel"></div>
 
-    <!-- CANVAS -->
     <div id="cvsWrap">
       <div class="drop-ovl" id="dropOvl">
         <div class="drop-icon">📐</div>
         <div class="drop-title">Upload a Drawing</div>
-        <div class="drop-sub">PDF (multi-page) or any image<br>Floor plans, site plans, elevations…</div>
+        <div class="drop-sub">PDF (multi-page) or any image<br>Then calibrate the scale before measuring</div>
         <button class="drop-btn" onclick="document.getElementById('fileIn').click()">Choose File</button>
       </div>
 
@@ -403,7 +333,7 @@ input[type=number], select {
       <canvas id="dc"></canvas>
       <canvas id="oc"></canvas>
 
-      <!-- Mobile: finish polygon button -->
+      <div id="calibBanner">Click two points on a known dimension, then enter the real length</div>
       <button id="finishBtn" onclick="finishArea()">✓ Finish Polygon</button>
 
       <div class="zoom-ctrl">
@@ -412,14 +342,12 @@ input[type=number], select {
         <button class="zbtn" onclick="doZoom(1/1.2)">−</button>
         <button class="zbtn" style="font-size:11px" onclick="resetView()">⌂</button>
       </div>
-      <div id="coords">x:0 y:0</div>
     </div>
 
-    <!-- SIDEBAR -->
     <div id="sidebar">
       <div id="sbHandle" onclick="toggleSidebar()">
-        <div class="sb-handle-bar"></div>
-        <div class="sb-handle-lbl" id="sbLbl">MEASUREMENTS</div>
+        <div class="sb-bar"></div>
+        <div class="sb-lbl" id="sbLbl">MEASUREMENTS ▲</div>
       </div>
 
       <div class="panel-hdr">
@@ -437,7 +365,7 @@ input[type=number], select {
       </div>
 
       <div class="mlist" id="mlist">
-        <div class="empty-msg">No measurements yet.<br>Upload a drawing,<br>then tap a tool above.</div>
+        <div class="empty-msg">No measurements yet.<br>Upload a drawing, calibrate<br>the scale, then measure.</div>
       </div>
 
       <div class="summary" id="sumDiv" style="display:none">
@@ -448,8 +376,70 @@ input[type=number], select {
       <button class="exp-btn" onclick="exportCSV()">⬇ Export CSV</button>
     </div>
 
-  </div><!-- /main -->
-</div><!-- /app -->
+  </div>
+</div>
+
+<!-- CALIBRATION MODAL -->
+<div id="calibModal">
+  <div class="modal-box">
+    <div class="modal-title">📏 Set Scale</div>
+
+    <!-- Option A: draw a reference line -->
+    <div class="modal-sub">Option A — Draw a reference line</div>
+    <div class="modal-desc">
+      Close this panel, press <b>Calibrate</b>, then click two points on the drawing that represent a known real-world distance. A dialog will ask for the real length.
+    </div>
+    <button class="modal-btn primary" onclick="startCalibDraw()">Draw Reference Line</button>
+
+    <div class="modal-sep"></div>
+
+    <!-- Option B: enter drawing scale ratio -->
+    <div class="modal-sub">Option B — Enter drawing scale</div>
+    <div class="modal-desc">
+      If you know the drawing scale (e.g. 1:200) <em>and</em> the PDF was printed at <b>72 DPI</b> (standard PDF), enter the ratio below. For best accuracy, use Option A.
+    </div>
+
+    <div class="modal-row">
+      <label>Scale 1:</label>
+      <input type="number" id="scaleRatioIn" value="200" min="1" step="1" inputmode="decimal" placeholder="e.g. 200">
+    </div>
+    <div class="modal-row">
+      <label>PDF DPI:</label>
+      <input type="number" id="dpiIn" value="72" min="1" step="1" inputmode="decimal" placeholder="72">
+    </div>
+
+    <div class="modal-sub" style="margin-top:4px">Common scales</div>
+    <div class="preset-grid" id="presetGrid"></div>
+
+    <div class="modal-btns">
+      <button class="modal-btn secondary" onclick="closeCalibModal()">Cancel</button>
+      <button class="modal-btn primary"   onclick="applyScaleRatio()">Apply Ratio</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALIB VALUE MODAL (after drawing reference line) -->
+<div id="calibValueModal" style="position:fixed;inset:0;z-index:110;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);padding:20px">
+  <div class="modal-box">
+    <div class="modal-title">📏 Enter Real Length</div>
+    <div class="modal-desc">You drew a line of <b id="calibPxLabel">— px</b>. What is its real-world length?</div>
+    <div class="modal-row">
+      <label>Length:</label>
+      <input type="number" id="calibLenIn" min="0.001" step="any" inputmode="decimal" placeholder="e.g. 5.0">
+      <select id="calibUnitIn" style="background:var(--surf2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:8px 10px;border-radius:7px">
+        <option value="mm">mm</option>
+        <option value="cm">cm</option>
+        <option value="m" selected>m</option>
+        <option value="in">in</option>
+        <option value="ft">ft</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn secondary" onclick="cancelCalibValue()">Cancel</button>
+      <button class="modal-btn primary"   onclick="applyCalibValue()">Set Scale</button>
+    </div>
+  </div>
+</div>
 
 <input type="file" id="fileIn" accept="image/*,.pdf,application/pdf" style="display:none">
 
@@ -458,33 +448,63 @@ input[type=number], select {
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
-// SCALE FIX EXPLANATION:
-// PDF pages are rendered at PDF_RENDER_SCALE (e.g. 1.5) for crispness.
-// World coordinates are stored in LOGICAL pixels (= rendered px / PDF_RENDER_SCALE).
-// So 1 world-unit = 1 logical pixel = 1/PDF_RENDER_SCALE rendered pixels.
-// The view transform maps world → canvas:  canvasX = worldX * viewScale + offsetX
-// The drawing canvas also maps rendered-px → canvas, with an implicit
-// reduction by PDF_RENDER_SCALE baked into drawImage().
-// Distance in world-px × (scaleInput / 1) × unit = real-world measurement.
-// This means the scale input means "real-world units per logical pixel".
+// ─── SCALE MODEL ─────────────────────────────────────────────────────────────
+//
+//  ALL pixel distances stored in measurements are in "page pixels" —
+//  the coordinate space of the rendered page canvas at PDF_RENDER_SCALE.
+//  (For images, page pixels = image pixels.)
+//
+//  S.pxPerUnit  = how many page-pixels equal one real-world unit.
+//                 Set by calibration.  null = not calibrated.
+//
+//  Real length  = pagePxDistance  / S.pxPerUnit
+//  Real area    = pagePxArea      / (S.pxPerUnit ^ 2)
+//
+//  Page pixels vs view pixels:
+//    viewX = pageX * S.vs + S.ox    (view transform)
+//    pageX = (viewX - S.ox) / S.vs
+//
+//  So clicks in view-canvas coords are converted to page coords via toPage(),
+//  and all measurements store page coords.
 
-const PDF_RENDER_SCALE = 1.5; // render PDF at 1.5× for sharpness; world coords are in 1× logical px
+const PDF_RS = 1.5; // PDF render scale (for sharpness); doesn't affect measurement math
+
+const PRESETS = [
+  { label:'1:50',   ratio:50  },
+  { label:'1:100',  ratio:100 },
+  { label:'1:200',  ratio:200 },
+  { label:'1:250',  ratio:250 },
+  { label:'1:500',  ratio:500 },
+  { label:'1:1000', ratio:1000},
+  { label:'1:1250', ratio:1250},
+  { label:'1:2500', ratio:2500},
+];
+const COLORS = ['#f0c040','#4da8ff','#7fff8a','#ff7eb3','#ff9f5a','#c97bff','#ff5f5f','#5affd6'];
 
 const S = {
   tool: 'pan',
-  pdfDoc:  null,
-  pages:   [],       // {canvas, w, h} in RENDERED px; logical = rendered / PDF_RENDER_SCALE
+  pdfDoc: null,
+  pages: [],          // {canvas, w, h}  — rendered at PDF_RS
   curPage: 0,
   totPages: 0,
-  vs: 1, ox: 0, oy: 0,  // view: world→canvas transform
+
+  // view transform: view = page * vs + offset
+  vs: 1, ox: 0, oy: 0,
+
+  // ── SCALE (the only thing that matters for measurements) ──
+  pxPerUnit: null,    // page-pixels per real unit; null = uncalibrated
+  unit: 'm',          // real-world unit string
+
+  // calibration state
+  calibPts: [],       // 0 or 1 page-coord points collected so far
+
+  // pan/pinch
   drag: false, dx0: 0, dy0: 0,
-  // pinch
   pinching: false, pinchDist0: 0, pinchVs0: 0, pinchMid: null,
-  // tap timing (for double-tap on mobile)
   lastTap: 0,
+
   measurements: [],
-  pts: [],           // active drawing points (world coords)
+  pts: [],            // active drawing points (page coords)
   selId: null,
   color: '#f0c040',
   cnt: 1,
@@ -492,15 +512,12 @@ const S = {
   sbOpen: false,
 };
 
-const COLORS = ['#f0c040','#4da8ff','#7fff8a','#ff7eb3','#ff9f5a','#c97bff','#ff5f5f','#5affd6'];
-const isMobile = () => window.innerWidth <= 700;
-
-// ─── CANVASES ────────────────────────────────────────────────────────────────
+// ─── CANVAS SETUP ────────────────────────────────────────────────────────────
 const cvsWrap = document.getElementById('cvsWrap');
 const dc = document.getElementById('dc');
 const oc = document.getElementById('oc');
 const dctx = dc.getContext('2d');
-const octx = oc.getContext('2d');
+const octx  = oc.getContext('2d');
 
 function resizeCvs() {
   const r = cvsWrap.getBoundingClientRect();
@@ -511,12 +528,19 @@ function resizeCvs() {
 window.addEventListener('resize', resizeCvs);
 resizeCvs();
 
+// ─── COORDINATE TRANSFORMS ───────────────────────────────────────────────────
+// page coords = the coordinate space of the rendered canvas
+// view coords = screen pixels on the canvas element
+
+function toView(px, py) { return { x: px * S.vs + S.ox, y: py * S.vs + S.oy }; }
+function toPage(vx, vy) { return { x: (vx - S.ox) / S.vs, y: (vy - S.oy) / S.vs }; }
+
 // ─── FILE INPUT ──────────────────────────────────────────────────────────────
 document.getElementById('fileIn').addEventListener('change', e => {
   if (e.target.files[0]) loadFile(e.target.files[0]);
   e.target.value = '';
 });
-cvsWrap.addEventListener('dragover', e => { e.preventDefault(); cvsWrap.style.outline = '2px dashed var(--accent)'; });
+cvsWrap.addEventListener('dragover', e => { e.preventDefault(); cvsWrap.style.outline = '2px dashed var(--acc)'; });
 cvsWrap.addEventListener('dragleave', () => { cvsWrap.style.outline = ''; });
 cvsWrap.addEventListener('drop', e => {
   e.preventDefault(); cvsWrap.style.outline = '';
@@ -533,11 +557,11 @@ function loadFile(f) {
 async function loadPDF(file) {
   showLoad('Loading PDF…');
   try {
-    const buf = await file.arrayBuffer();
-    S.pdfDoc     = await pdfjsLib.getDocument({ data: buf }).promise;
-    S.totPages   = S.pdfDoc.numPages;
-    S.pages      = new Array(S.totPages).fill(null);
-    S.curPage    = 0;
+    const buf  = await file.arrayBuffer();
+    S.pdfDoc   = await pdfjsLib.getDocument({ data: buf }).promise;
+    S.totPages = S.pdfDoc.numPages;
+    S.pages    = new Array(S.totPages).fill(null);
+    S.curPage  = 0;
     resetMeasurements();
     buildThumbPanel();
     await renderPdfPage(0);
@@ -555,8 +579,7 @@ function loadImage(file) {
     c.width = img.width; c.height = img.height;
     c.getContext('2d').drawImage(img, 0, 0);
     S.pdfDoc = null; S.totPages = 1;
-    // For images, PDF_RENDER_SCALE = 1 (no scaling), logical = rendered
-    S.pages = [{ canvas: c, w: img.width, h: img.height, rscale: 1 }];
+    S.pages  = [{ canvas: c, w: img.width, h: img.height }];
     S.curPage = 0;
     resetMeasurements();
     buildThumbPanel();
@@ -571,15 +594,14 @@ function loadImage(file) {
 
 async function renderPdfPage(idx) {
   if (S.pages[idx]) { switchPage(idx); return; }
-  showLoad(`Rendering page ${idx + 1} / ${S.totPages}…`);
+  showLoad(`Rendering page ${idx+1} / ${S.totPages}…`);
   try {
     const page = await S.pdfDoc.getPage(idx + 1);
-    const vp   = page.getViewport({ scale: PDF_RENDER_SCALE });
+    const vp   = page.getViewport({ scale: PDF_RS });
     const c    = document.createElement('canvas');
     c.width = vp.width; c.height = vp.height;
     await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
-    // logical dimensions = rendered / PDF_RENDER_SCALE
-    S.pages[idx] = { canvas: c, w: vp.width, h: vp.height, rscale: PDF_RENDER_SCALE };
+    S.pages[idx] = { canvas: c, w: vp.width, h: vp.height };
     updateThumb(idx);
   } catch(e) { console.error(e); alert('Error rendering page ' + (idx+1)); }
   finally { hideLoad(); }
@@ -594,28 +616,22 @@ function switchPage(idx) {
   updateFinishBtn();
 }
 
-// ─── LOGICAL SIZE of a page ─────────────────────────────────────────────────
-// World/logical pixels = rendered pixels / rscale
-function logW(pg) { return pg.w / pg.rscale; }
-function logH(pg) { return pg.h / pg.rscale; }
-
 // ─── THUMBNAILS ──────────────────────────────────────────────────────────────
 function buildThumbPanel() {
   const panel = document.getElementById('pagePanel');
   panel.innerHTML = '';
   for (let i = 0; i < S.totPages; i++) {
-    const tw = document.createElement('div');
+    const tw   = document.createElement('div');
     tw.className = 'tw' + (i === 0 ? ' active' : '');
     tw.onclick = () => S.pdfDoc ? renderPdfPage(i) : switchPage(i);
 
-    const box = document.createElement('div');
+    const box  = document.createElement('div');
     box.className = 'tbox'; box.id = 'tbox-' + i;
-
     const badge = document.createElement('div');
     badge.className = 'tbadge'; badge.id = 'tbadge-' + i;
     box.appendChild(badge);
 
-    const num = document.createElement('div');
+    const num  = document.createElement('div');
     num.className = 'tnum'; num.textContent = i + 1;
 
     tw.appendChild(box); tw.appendChild(num);
@@ -629,7 +645,7 @@ function updateThumb(idx) {
   const box = document.getElementById('tbox-' + idx); if (!box) return;
   let tc = box.querySelector('canvas');
   if (!tc) { tc = document.createElement('canvas'); box.insertBefore(tc, box.firstChild); }
-  const maxW = 60, maxH = 46;
+  const maxW = 58, maxH = 44;
   const ratio = Math.min(maxW / pg.w, maxH / pg.h);
   tc.width  = Math.round(pg.w * ratio);
   tc.height = Math.round(pg.h * ratio);
@@ -645,49 +661,51 @@ function refreshBadge(idx) {
 
 // ─── TOOLS ───────────────────────────────────────────────────────────────────
 function setTool(t) {
-  S.tool = t; S.pts = [];
-  ['pan','length','area','rect'].forEach(id => {
-    document.getElementById('t' + id.charAt(0).toUpperCase() + id.slice(1))
-      .classList.toggle('active', id === t);
+  S.tool = t; S.pts = []; S.calibPts = [];
+  ['pan','length','area','rect','calib'].forEach(id => {
+    const el = document.getElementById('t' + id.charAt(0).toUpperCase() + id.slice(1));
+    if (!el) return;
+    el.classList.remove('active','calib-active');
+    if (id === t) el.classList.add(t === 'calib' ? 'calib-active' : 'active');
   });
   dc.style.cursor = t === 'pan' ? 'grab' : 'crosshair';
+  const banner = document.getElementById('calibBanner');
+  banner.style.display = t === 'calib' ? 'block' : 'none';
   updateFinishBtn();
   redrawOverlay();
 }
 setTool('pan');
 
 function updateFinishBtn() {
-  const btn = document.getElementById('finishBtn');
-  btn.style.display = (S.tool === 'area' && S.pts.length >= 3) ? 'block' : 'none';
+  document.getElementById('finishBtn').style.display =
+    (S.tool === 'area' && S.pts.length >= 3) ? 'block' : 'none';
 }
-
-// ─── COORDINATE TRANSFORMS ───────────────────────────────────────────────────
-function toCvs(wx, wy) { return { x: wx * S.vs + S.ox, y: wy * S.vs + S.oy }; }
-function toWld(cx, cy) { return { x: (cx - S.ox) / S.vs, y: (cy - S.oy) / S.vs }; }
 
 // ─── VIEW ────────────────────────────────────────────────────────────────────
 function resetView() {
   const pg = S.pages[S.curPage]; if (!pg) return;
-  const lw = logW(pg), lh = logH(pg);
   const r  = cvsWrap.getBoundingClientRect();
-  const s  = Math.min(r.width * 0.93 / lw, r.height * 0.93 / lh);
+  const s  = Math.min(r.width * 0.93 / pg.w, r.height * 0.93 / pg.h);
   S.vs = s;
-  S.ox = (r.width  - lw * s) / 2;
-  S.oy = (r.height - lh * s) / 2;
+  S.ox = (r.width  - pg.w * s) / 2;
+  S.oy = (r.height - pg.h * s) / 2;
   updateZL(); redraw();
 }
 
 function doZoom(f, cx, cy) {
   const r = cvsWrap.getBoundingClientRect();
-  cx = cx ?? r.width / 2; cy = cy ?? r.height / 2;
-  const wx = (cx - S.ox) / S.vs, wy = (cy - S.oy) / S.vs;
+  cx = cx ?? r.width  / 2;
+  cy = cy ?? r.height / 2;
+  const px = (cx - S.ox) / S.vs;
+  const py = (cy - S.oy) / S.vs;
   S.vs = Math.max(0.04, Math.min(40, S.vs * f));
-  S.ox = cx - wx * S.vs; S.oy = cy - wy * S.vs;
+  S.ox = cx - px * S.vs;
+  S.oy = cy - py * S.vs;
   updateZL(); redraw();
 }
 function updateZL() { document.getElementById('zoomLbl').textContent = Math.round(S.vs * 100) + '%'; }
 
-// ─── MOUSE EVENTS ────────────────────────────────────────────────────────────
+// ─── MOUSE ───────────────────────────────────────────────────────────────────
 dc.addEventListener('wheel', e => {
   e.preventDefault();
   doZoom(e.deltaY < 0 ? 1.1 : 0.909, e.offsetX, e.offsetY);
@@ -703,61 +721,47 @@ dc.addEventListener('mousedown', e => {
 });
 
 dc.addEventListener('mousemove', e => {
-  const w = toWld(e.offsetX, e.offsetY);
-  document.getElementById('coords').textContent = 'x:' + Math.round(w.x) + ' y:' + Math.round(w.y);
   if (S.drag) {
     S.ox += e.clientX - S.dx0; S.oy += e.clientY - S.dy0;
     S.dx0 = e.clientX; S.dy0 = e.clientY;
     redraw(); return;
   }
-  redrawOverlay(w.x, w.y);
+  const p = toPage(e.offsetX, e.offsetY);
+  redrawOverlay(p.x, p.y);
 });
 
-dc.addEventListener('mouseup',  () => { S.drag = false; dc.style.cursor = S.tool === 'pan' ? 'grab' : 'crosshair'; });
+dc.addEventListener('mouseup',    () => { S.drag = false; dc.style.cursor = S.tool === 'pan' ? 'grab' : 'crosshair'; });
 dc.addEventListener('mouseleave', () => { S.drag = false; });
-dc.addEventListener('dblclick', () => { if (S.tool === 'area' && S.pts.length >= 3) finishArea(); });
+dc.addEventListener('dblclick',   () => { if (S.tool === 'area' && S.pts.length >= 3) finishArea(); });
 dc.addEventListener('contextmenu', e => {
   e.preventDefault();
   if (S.tool === 'area' && S.pts.length >= 3) finishArea();
-  else { S.pts = []; updateFinishBtn(); redrawOverlay(); }
+  else { S.pts = []; S.calibPts = []; updateFinishBtn(); redrawOverlay(); }
 });
 
-// ─── TOUCH EVENTS (iPhone / iPad) ────────────────────────────────────────────
+// ─── TOUCH ───────────────────────────────────────────────────────────────────
 function getTouchPos(touch) {
   const r = dc.getBoundingClientRect();
   return { x: touch.clientX - r.left, y: touch.clientY - r.top };
 }
-function touchDist(t1, t2) {
-  return Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-}
-function touchMid(t1, t2, r) {
-  return { x: (t1.clientX + t2.clientX) / 2 - r.left,
-           y: (t1.clientY + t2.clientY) / 2 - r.top };
-}
+function pinchDist(t1, t2)  { return Math.hypot(t1.clientX-t2.clientX, t1.clientY-t2.clientY); }
+function pinchMid(t1, t2, r){ return { x:(t1.clientX+t2.clientX)/2-r.left, y:(t1.clientY+t2.clientY)/2-r.top }; }
 
 dc.addEventListener('touchstart', e => {
   e.preventDefault();
   if (e.touches.length === 2) {
-    // pinch start
-    S.pinching   = true; S.drag = false;
-    S.pinchDist0 = touchDist(e.touches[0], e.touches[1]);
+    S.pinching = true; S.drag = false;
+    S.pinchDist0 = pinchDist(e.touches[0], e.touches[1]);
     S.pinchVs0   = S.vs;
-    const r = dc.getBoundingClientRect();
-    S.pinchMid   = touchMid(e.touches[0], e.touches[1], r);
+    S.pinchMid   = pinchMid(e.touches[0], e.touches[1], dc.getBoundingClientRect());
     return;
   }
   if (e.touches.length === 1) {
     S.pinching = false;
     const pos = getTouchPos(e.touches[0]);
-    if (S.tool === 'pan') {
-      S.drag = true; S.dx0 = e.touches[0].clientX; S.dy0 = e.touches[0].clientY;
-      return;
-    }
-    // double-tap detection
+    if (S.tool === 'pan') { S.drag = true; S.dx0 = e.touches[0].clientX; S.dy0 = e.touches[0].clientY; return; }
     const now = Date.now();
-    if (now - S.lastTap < 300 && S.tool === 'area' && S.pts.length >= 3) {
-      finishArea(); S.lastTap = 0; return;
-    }
+    if (now - S.lastTap < 300 && S.tool === 'area' && S.pts.length >= 3) { finishArea(); S.lastTap = 0; return; }
     S.lastTap = now;
     handleTap(pos.x, pos.y);
   }
@@ -766,113 +770,241 @@ dc.addEventListener('touchstart', e => {
 dc.addEventListener('touchmove', e => {
   e.preventDefault();
   if (e.touches.length === 2 && S.pinching) {
-    const r    = dc.getBoundingClientRect();
-    const d    = touchDist(e.touches[0], e.touches[1]);
-    const mid  = touchMid(e.touches[0], e.touches[1], r);
-    const f    = d / S.pinchDist0;
-    const newVs = Math.max(0.04, Math.min(40, S.pinchVs0 * f));
-    const wx = (S.pinchMid.x - S.ox) / S.vs;
-    const wy = (S.pinchMid.y - S.oy) / S.vs;
-    S.vs = newVs;
-    S.ox = mid.x - wx * S.vs;
-    S.oy = mid.y - wy * S.vs;
+    const r   = dc.getBoundingClientRect();
+    const d   = pinchDist(e.touches[0], e.touches[1]);
+    const mid = pinchMid(e.touches[0], e.touches[1], r);
+    const newVs = Math.max(0.04, Math.min(40, S.pinchVs0 * d / S.pinchDist0));
+    const px = (S.pinchMid.x - S.ox) / S.vs;
+    const py = (S.pinchMid.y - S.oy) / S.vs;
+    S.vs = newVs; S.ox = mid.x - px * S.vs; S.oy = mid.y - py * S.vs;
     updateZL(); redraw(); return;
   }
   if (e.touches.length === 1 && S.drag) {
-    S.ox += e.touches[0].clientX - S.dx0;
-    S.oy += e.touches[0].clientY - S.dy0;
+    S.ox += e.touches[0].clientX - S.dx0; S.oy += e.touches[0].clientY - S.dy0;
     S.dx0 = e.touches[0].clientX; S.dy0 = e.touches[0].clientY;
     redraw(); return;
   }
   if (e.touches.length === 1 && S.tool !== 'pan') {
     const pos = getTouchPos(e.touches[0]);
-    const w   = toWld(pos.x, pos.y);
-    redrawOverlay(w.x, w.y);
+    const p   = toPage(pos.x, pos.y);
+    redrawOverlay(p.x, p.y);
   }
 }, { passive: false });
 
 dc.addEventListener('touchend', e => {
   e.preventDefault();
   if (e.touches.length < 2) S.pinching = false;
-  if (e.touches.length === 0) { S.drag = false; }
+  if (e.touches.length === 0) S.drag = false;
 }, { passive: false });
 
-// ─── TAP / CLICK HANDLER ─────────────────────────────────────────────────────
-function handleTap(cx, cy) {
+// ─── TAP HANDLER ─────────────────────────────────────────────────────────────
+function handleTap(vx, vy) {
   if (!S.pages.length) return;
-  const w = toWld(cx, cy);
+  const p = toPage(vx, vy);
+
+  if (S.tool === 'calib') {
+    S.calibPts.push(p);
+    if (S.calibPts.length === 2) openCalibValueModal();
+    redrawOverlay(p.x, p.y);
+    return;
+  }
+
   if (S.tool === 'length') {
-    S.pts.push(w);
+    S.pts.push(p);
     if (S.pts.length === 2) finishLen();
   } else if (S.tool === 'area') {
-    S.pts.push(w);
+    S.pts.push(p);
     updateFinishBtn();
   } else if (S.tool === 'rect') {
-    S.pts.push(w);
+    S.pts.push(p);
     if (S.pts.length === 2) finishRect();
   }
-  redrawOverlay(w.x, w.y);
+  redrawOverlay(p.x, p.y);
 }
 
-// ─── SCALE & MEASUREMENT MATH ────────────────────────────────────────────────
-// World px distances are in LOGICAL pixels (= rendered px / rscale).
-// getScl().s is the real-world units per logical pixel.
-// So:  real_length = pixel_distance_in_world × s
-//      real_area   = pixel_area_in_world     × s × s
+// ─── CALIBRATION ─────────────────────────────────────────────────────────────
 
-function getScl() {
-  return {
-    s: parseFloat(document.getElementById('scaleIn').value) || 1,
-    u: document.getElementById('unitIn').value,
+// --- Option A: draw reference line ---
+function startCalibDraw() {
+  closeCalibModal();
+  setTool('calib');
+}
+
+function openCalibValueModal() {
+  // show dialog asking for the real length of the drawn calib line
+  const d  = pageDist(S.calibPts[0], S.calibPts[1]);
+  document.getElementById('calibPxLabel').textContent = Math.round(d) + ' page-px';
+  document.getElementById('calibLenIn').value = '';
+  // sync unit select with current unit
+  document.getElementById('calibUnitIn').value = S.unit;
+  document.getElementById('calibValueModal').style.display = 'flex';
+}
+
+function applyCalibValue() {
+  const len  = parseFloat(document.getElementById('calibLenIn').value);
+  const unit = document.getElementById('calibUnitIn').value;
+  if (!len || len <= 0) { alert('Please enter a valid length.'); return; }
+  const d = pageDist(S.calibPts[0], S.calibPts[1]);
+  if (d < 2) { alert('Line too short — please draw a longer reference line.'); cancelCalibValue(); return; }
+
+  S.pxPerUnit = d / len;
+  S.unit      = unit;
+  document.getElementById('unitIn').value = unit;
+
+  document.getElementById('calibValueModal').style.display = 'none';
+  S.calibPts = [];
+  setTool('pan');
+  updateScalePill();
+  renderSidebar();
+  redraw();
+}
+
+function cancelCalibValue() {
+  document.getElementById('calibValueModal').style.display = 'none';
+  S.calibPts = [];
+  setTool('pan');
+  redrawOverlay();
+}
+
+// --- Option B: scale ratio ---
+const presetGrid = document.getElementById('presetGrid');
+let selectedPreset = null;
+PRESETS.forEach(p => {
+  const btn = document.createElement('button');
+  btn.className = 'preset-btn';
+  btn.textContent = p.label;
+  btn.onclick = () => {
+    document.getElementById('scaleRatioIn').value = p.ratio;
+    presetGrid.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
   };
+  presetGrid.appendChild(btn);
+});
+
+function applyScaleRatio() {
+  // Scale ratio logic:
+  // A PDF rendered at 72 DPI means 1 inch = 72 page-pixels (at PDF_RS=1).
+  // At PDF_RS render scale: 1 inch = 72 * PDF_RS page-pixels.
+  // Drawing scale 1:R means 1 unit on paper = R units in reality.
+  // User's selected output unit determines how we express measurements.
+  //
+  // pxPerUnit = page-pixels per real-world unit
+  //
+  // Example: scale 1:100, unit=m, DPI=72, PDF_RS=1.5
+  //   72*1.5 = 108 px/inch on paper
+  //   1 inch on paper = 25.4 mm on paper = 25.4*100 mm = 2540 mm = 2.54 m in reality
+  //   So 108 px = 2.54 m  →  pxPerUnit = 108 / 2.54 m ≈ 42.5 px/m
+
+  const ratio  = parseFloat(document.getElementById('scaleRatioIn').value);
+  const dpi    = parseFloat(document.getElementById('dpiIn').value) || 72;
+  const unit   = document.getElementById('unitIn').value;
+  if (!ratio || ratio <= 0) { alert('Enter a valid scale ratio.'); return; }
+
+  const pxPerInchOnPage = dpi * PDF_RS;  // rendered page-pixels per paper inch
+
+  // Convert 1 paper inch to real-world units
+  const inchInMm = 25.4;
+  const inchOnPaperMm  = inchInMm;   // 1 paper inch = 25.4 mm on paper
+  const inchRealMm     = inchOnPaperMm * ratio;  // real mm for 1 paper inch
+
+  // Convert real mm to chosen unit
+  const mmPerUnit = { mm:1, cm:10, m:1000, 'in':25.4, ft:304.8 }[unit] || 1000;
+  const inchRealUnits = inchRealMm / mmPerUnit;
+
+  S.pxPerUnit = pxPerInchOnPage / inchRealUnits;
+  S.unit      = unit;
+
+  closeCalibModal();
+  updateScalePill();
+  renderSidebar();
+  redraw();
 }
 
-function wDist(a, b) { return Math.hypot(b.x - a.x, b.y - a.y); }
+function updateScalePill() {
+  const pill  = document.getElementById('scalePill');
+  const dot   = document.getElementById('scaleDot');
+  const label = document.getElementById('scaleLabel');
+  if (S.pxPerUnit === null) {
+    pill.className  = 'scale-pill uncalibrated';
+    dot.style.background = 'var(--danger)';
+    label.textContent    = 'Not calibrated';
+  } else {
+    pill.className  = 'scale-pill calibrated';
+    dot.style.background = 'var(--green)';
+    // display as "1 unit = X px" or just show it's set
+    const unitsPerPx = 1 / S.pxPerUnit;
+    label.textContent = `1px = ${fmtNum(unitsPerPx)} ${S.unit}`;
+  }
+}
+
+function openCalibModal()  { document.getElementById('calibModal').classList.add('open'); }
+function closeCalibModal() { document.getElementById('calibModal').classList.remove('open'); }
+
+function onUnitChange() {
+  // if already calibrated, convert pxPerUnit to new unit
+  if (S.pxPerUnit === null) return;
+  const oldUnit = S.unit;
+  const newUnit = document.getElementById('unitIn').value;
+  if (oldUnit === newUnit) return;
+  const mmPerOld = { mm:1, cm:10, m:1000, 'in':25.4, ft:304.8 }[oldUnit] || 1000;
+  const mmPerNew = { mm:1, cm:10, m:1000, 'in':25.4, ft:304.8 }[newUnit] || 1000;
+  // pxPerUnit_old × (old_unit / mm) = px/mm;  px/mm ÷ (new_unit / mm) = pxPerUnit_new
+  S.pxPerUnit = S.pxPerUnit * mmPerOld / mmPerNew;
+  S.unit = newUnit;
+  updateScalePill();
+  renderSidebar();
+  redraw();
+}
+
+// ─── MEASUREMENT MATH ────────────────────────────────────────────────────────
+// All pixel math is in page-pixel space.
+
+function pageDist(a, b) { return Math.hypot(b.x - a.x, b.y - a.y); }
 
 function polyArea(pts) {
   let a = 0;
   for (let i = 0; i < pts.length; i++) {
-    const j = (i + 1) % pts.length;
+    const j = (i+1) % pts.length;
     a += pts[i].x * pts[j].y - pts[j].x * pts[i].y;
   }
   return Math.abs(a) / 2;
 }
 
-function fmtLen(wpx) {
-  const { s, u } = getScl();
-  const v = wpx * s;
-  return fmt(v) + '\u202f' + u;
-}
+function toReal(pagePx)   { return S.pxPerUnit ? pagePx / S.pxPerUnit : null; }
+function toRealArea(ppx2) { return S.pxPerUnit ? ppx2   / (S.pxPerUnit * S.pxPerUnit) : null; }
 
-function fmtArea(wpx2) {
-  const { s, u } = getScl();
-  const v = wpx2 * s * s;
-  return fmt(v) + '\u202f' + u + '\u00b2';
+function fmtLen(pagePx) {
+  const v = toReal(pagePx);
+  if (v === null) return '— (not calibrated)';
+  return fmtNum(v) + '\u202f' + S.unit;
 }
-
-function fmt(v) {
-  if (v >= 1000) return v.toFixed(0);
-  if (v >= 10)   return v.toFixed(1);
-  return v.toFixed(3);
+function fmtArea(ppx2) {
+  const v = toRealArea(ppx2);
+  if (v === null) return '— (not calibrated)';
+  return fmtNum(v) + '\u202f' + S.unit + '\u00b2';
+}
+function fmtNum(v) {
+  if (v >= 10000) return v.toFixed(0);
+  if (v >= 100)   return v.toFixed(1);
+  if (v >= 1)     return v.toFixed(2);
+  return v.toFixed(4);
 }
 
 // ─── FINISH MEASUREMENTS ─────────────────────────────────────────────────────
 function finishLen() {
   const p = [...S.pts];
-  addM({ type: 'length', pts: p, wpx: wDist(p[0], p[1]) });
+  addM({ type:'length', pts:p, ppx: pageDist(p[0], p[1]) });
   S.pts = [];
 }
 function finishArea() {
-  const p = [...S.pts];
-  if (p.length < 3) return;
-  addM({ type: 'area', pts: p, wpx2: polyArea(p) });
-  S.pts = [];
-  updateFinishBtn();
+  const p = [...S.pts]; if (p.length < 3) return;
+  addM({ type:'area', pts:p, ppx2: polyArea(p) });
+  S.pts = []; updateFinishBtn();
 }
 function finishRect() {
   const [a, b] = S.pts;
-  const pts = [{ x:a.x,y:a.y },{ x:b.x,y:a.y },{ x:b.x,y:b.y },{ x:a.x,y:b.y }];
-  addM({ type: 'rect', pts, wpx2: Math.abs((b.x - a.x) * (b.y - a.y)) });
+  const pts = [{x:a.x,y:a.y},{x:b.x,y:a.y},{x:b.x,y:b.y},{x:a.x,y:b.y}];
+  addM({ type:'rect', pts, ppx2: Math.abs((b.x-a.x)*(b.y-a.y)) });
   S.pts = [];
 }
 
@@ -902,7 +1034,7 @@ function clearAll() {
 }
 
 function resetMeasurements() {
-  S.measurements = []; S.pts = []; S.selId = null; S.cnt = 1;
+  S.measurements = []; S.pts = []; S.calibPts = []; S.selId = null; S.cnt = 1;
   updateFinishBtn();
 }
 
@@ -914,7 +1046,6 @@ function setFilter(f) {
   });
   renderSidebar();
 }
-
 function filtered() {
   return S.measurements.filter(m => {
     if (S.filter === 'page')   return m.page === S.curPage;
@@ -928,7 +1059,8 @@ function filtered() {
 function toggleSidebar() {
   S.sbOpen = !S.sbOpen;
   document.getElementById('sidebar').classList.toggle('open', S.sbOpen);
-  document.getElementById('sbLbl').textContent = S.sbOpen ? 'HIDE ▼' : 'MEASUREMENTS ▲';
+  const n = S.measurements.length;
+  document.getElementById('sbLbl').textContent = S.sbOpen ? 'HIDE ▼' : `MEASUREMENTS${n?` (${n})`:''} ▲`;
 }
 
 function renderSidebar() {
@@ -936,13 +1068,11 @@ function renderSidebar() {
   const sumDiv = document.getElementById('sumDiv');
   const fms    = filtered();
 
-  // update handle badge count
-  const total = S.measurements.length;
-  document.getElementById('sbLbl').textContent =
-    S.sbOpen ? 'HIDE ▼' : `MEASUREMENTS${total > 0 ? ' ('+total+')' : ''} ▲`;
+  const n = S.measurements.length;
+  document.getElementById('sbLbl').textContent = S.sbOpen ? 'HIDE ▼' : `MEASUREMENTS${n?` (${n})`:''} ▲`;
 
   if (fms.length === 0) {
-    list.innerHTML = '<div class="empty-msg">No measurements yet.<br>Upload a drawing,<br>then tap a tool above.</div>';
+    list.innerHTML = '<div class="empty-msg">No measurements yet.<br>Upload a drawing, calibrate<br>the scale, then measure.</div>';
     sumDiv.style.display = 'none'; return;
   }
   sumDiv.style.display = '';
@@ -954,13 +1084,12 @@ function renderSidebar() {
     d.className = 'mi' + (m.id === S.selId ? ' sel' : '');
     d.onclick = () => {
       S.selId = m.id;
-      if (m.page !== S.curPage) {
-        if (S.pdfDoc) renderPdfPage(m.page); else switchPage(m.page);
-      } else { renderSidebar(); redrawOverlay(); }
+      if (m.page !== S.curPage) { if (S.pdfDoc) renderPdfPage(m.page); else switchPage(m.page); }
+      else { renderSidebar(); redrawOverlay(); }
     };
     let val, typ;
-    if (m.type === 'length') { val = fmtLen(m.wpx);   typ = 'Linear';      tLen  += m.wpx;  }
-    else                      { val = fmtArea(m.wpx2); typ = m.type === 'rect' ? 'Rectangle' : 'Polygon'; tArea += m.wpx2; }
+    if (m.type === 'length') { val = fmtLen(m.ppx);   typ = 'Linear';      tLen  += m.ppx;  }
+    else                      { val = fmtArea(m.ppx2); typ = m.type==='rect'?'Rectangle':'Polygon'; tArea += m.ppx2; }
     d.innerHTML =
       `<div class="mi-hdr">
         <div class="mdot" style="background:${m.color}"></div>
@@ -978,17 +1107,13 @@ function renderSidebar() {
   document.getElementById('sumCnt').textContent  = fms.length;
 }
 
-// ─── COLOR STRIP ─────────────────────────────────────────────────────────────
+// ─── COLORS ──────────────────────────────────────────────────────────────────
 const cs = document.getElementById('colorStrip');
 COLORS.forEach(c => {
   const sw = document.createElement('div');
   sw.className = 'sw' + (c === S.color ? ' active' : '');
   sw.style.background = c;
-  sw.onclick = () => {
-    S.color = c;
-    document.querySelectorAll('.sw').forEach(s => s.classList.remove('active'));
-    sw.classList.add('active');
-  };
+  sw.onclick = () => { S.color = c; document.querySelectorAll('.sw').forEach(s => s.classList.remove('active')); sw.classList.add('active'); };
   cs.appendChild(sw);
 });
 
@@ -997,49 +1122,41 @@ function redraw() {
   dctx.clearRect(0, 0, dc.width, dc.height);
   const pg = S.pages[S.curPage]; if (!pg) { redrawOverlay(); return; }
 
-  // The page canvas is rendered at rscale × logical size.
-  // We draw it at logical size × vs, effectively compressing by rscale then expanding by vs.
-  const lw = logW(pg), lh = logH(pg);
-  const c0 = toCvs(0, 0);
+  const v0 = toView(0, 0);
   dctx.fillStyle = '#fff';
-  dctx.fillRect(c0.x, c0.y, lw * S.vs, lh * S.vs);
-  dctx.drawImage(pg.canvas, c0.x, c0.y, lw * S.vs, lh * S.vs);
+  dctx.fillRect(v0.x, v0.y, pg.w * S.vs, pg.h * S.vs);
+  dctx.drawImage(pg.canvas, v0.x, v0.y, pg.w * S.vs, pg.h * S.vs);
 
   S.measurements.filter(m => m.page === S.curPage).forEach(m => drawM(dctx, m, m.id === S.selId));
   redrawOverlay();
 }
 
 function drawM(ctx, m, hi) {
-  const cp = m.pts.map(p => toCvs(p.x, p.y));
+  const vp = m.pts.map(p => toView(p.x, p.y));
   ctx.save();
   ctx.strokeStyle = m.color;
   ctx.lineWidth = hi ? 2.8 : 2;
   ctx.setLineDash([]);
 
   if (m.type === 'length') {
-    ctx.beginPath();
-    ctx.moveTo(cp[0].x, cp[0].y);
-    ctx.lineTo(cp[1].x, cp[1].y);
-    ctx.stroke();
-    // end tick marks
-    const ang = Math.atan2(cp[1].y - cp[0].y, cp[1].x - cp[0].x) + Math.PI / 2;
-    cp.forEach(p => {
+    ctx.beginPath(); ctx.moveTo(vp[0].x, vp[0].y); ctx.lineTo(vp[1].x, vp[1].y); ctx.stroke();
+    const ang = Math.atan2(vp[1].y-vp[0].y, vp[1].x-vp[0].x) + Math.PI/2;
+    vp.forEach(p => {
       ctx.beginPath();
-      ctx.moveTo(p.x + Math.cos(ang)*7, p.y + Math.sin(ang)*7);
-      ctx.lineTo(p.x - Math.cos(ang)*7, p.y - Math.sin(ang)*7);
+      ctx.moveTo(p.x+Math.cos(ang)*7, p.y+Math.sin(ang)*7);
+      ctx.lineTo(p.x-Math.cos(ang)*7, p.y-Math.sin(ang)*7);
       ctx.stroke();
     });
-    lblDraw(ctx, fmtLen(m.wpx), (cp[0].x+cp[1].x)/2, (cp[0].y+cp[1].y)/2 - 12, m.color);
+    lblDraw(ctx, fmtLen(m.ppx), (vp[0].x+vp[1].x)/2, (vp[0].y+vp[1].y)/2-12, m.color);
   } else {
     ctx.fillStyle = m.color + '28';
-    ctx.beginPath();
-    ctx.moveTo(cp[0].x, cp[0].y);
-    cp.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.beginPath(); ctx.moveTo(vp[0].x, vp[0].y);
+    vp.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
     ctx.closePath(); ctx.fill(); ctx.stroke();
-    cp.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 3.5, 0, Math.PI*2); ctx.fillStyle = m.color; ctx.fill(); });
-    const mx = cp.reduce((s,p) => s+p.x, 0) / cp.length;
-    const my = cp.reduce((s,p) => s+p.y, 0) / cp.length;
-    lblDraw(ctx, fmtArea(m.wpx2), mx, my, m.color);
+    vp.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 3.5, 0, Math.PI*2); ctx.fillStyle = m.color; ctx.fill(); });
+    const mx = vp.reduce((s,p)=>s+p.x,0)/vp.length;
+    const my = vp.reduce((s,p)=>s+p.y,0)/vp.length;
+    lblDraw(ctx, fmtArea(m.ppx2), mx, my, m.color);
   }
   ctx.restore();
 }
@@ -1049,77 +1166,80 @@ function lblDraw(ctx, text, x, y, color) {
   ctx.font = 'bold 11px "DM Mono",monospace';
   ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
   const tw = ctx.measureText(text).width;
-  ctx.fillStyle = 'rgba(8,9,12,0.88)';
-  ctx.beginPath();
-  if (ctx.roundRect) ctx.roundRect(x - tw/2 - 5, y - 16, tw + 10, 17, 3);
-  else ctx.rect(x - tw/2 - 5, y - 16, tw + 10, 17);
-  ctx.fill();
-  ctx.fillStyle = color;
-  ctx.fillText(text, x, y);
+  ctx.fillStyle = 'rgba(8,9,12,.88)';
+  if (ctx.roundRect) ctx.roundRect(x-tw/2-5, y-16, tw+10, 17, 3);
+  else ctx.rect(x-tw/2-5, y-16, tw+10, 17);
+  ctx.fill(); ctx.fillStyle = color; ctx.fillText(text, x, y);
   ctx.restore();
 }
 
-// ─── OVERLAY (in-progress drawing) ───────────────────────────────────────────
-function redrawOverlay(mx, my) {
+// ─── OVERLAY ─────────────────────────────────────────────────────────────────
+function redrawOverlay(px, py) {
   octx.clearRect(0, 0, oc.width, oc.height);
-  if (!S.pts.length && mx === undefined) return;
 
-  const cp  = S.pts.map(p => toCvs(p.x, p.y));
-  const cur = mx !== undefined ? toCvs(mx, my) : null;
-
-  octx.save();
-  octx.strokeStyle = S.color;
-  octx.lineWidth = 2;
-  octx.setLineDash([5, 4]);
-
-  if (S.tool === 'length' && cp.length === 1 && cur) {
-    octx.beginPath();
-    octx.moveTo(cp[0].x, cp[0].y);
-    octx.lineTo(cur.x, cur.y);
-    octx.stroke();
-    const d = wDist(S.pts[0], { x: mx, y: my });
-    lblDraw(octx, fmtLen(d), (cp[0].x+cur.x)/2, (cp[0].y+cur.y)/2 - 12, S.color);
+  // draw calib points/line
+  if (S.tool === 'calib' && S.calibPts.length > 0) {
+    const vp = S.calibPts.map(p => toView(p.x, p.y));
+    octx.save();
+    octx.strokeStyle = '#4da8ff'; octx.lineWidth = 2; octx.setLineDash([5,4]);
+    if (vp.length === 1 && px !== undefined) {
+      const cur = toView(px, py);
+      octx.beginPath(); octx.moveTo(vp[0].x, vp[0].y); octx.lineTo(cur.x, cur.y); octx.stroke();
+      const d = pageDist(S.calibPts[0], {x:px,y:py});
+      lblDraw(octx, Math.round(d) + ' px', (vp[0].x+cur.x)/2, (vp[0].y+cur.y)/2-12, '#4da8ff');
+    }
+    octx.setLineDash([]);
+    vp.forEach(p => { octx.beginPath(); octx.arc(p.x, p.y, 5, 0, Math.PI*2); octx.fillStyle='#4da8ff'; octx.fill(); });
+    octx.restore();
+    return;
   }
 
-  if ((S.tool === 'area' || S.tool === 'rect') && cp.length >= 1) {
-    octx.beginPath();
-    octx.moveTo(cp[0].x, cp[0].y);
-    cp.slice(1).forEach(p => octx.lineTo(p.x, p.y));
-    if (cur) octx.lineTo(cur.x, cur.y);
-    if (S.tool === 'area') octx.lineTo(cp[0].x, cp[0].y); // close
-    octx.stroke();
+  if (!S.pts.length && px === undefined) return;
+  const vp  = S.pts.map(p => toView(p.x, p.y));
+  const cur = px !== undefined ? toView(px, py) : null;
 
+  octx.save();
+  octx.strokeStyle = S.color; octx.lineWidth = 2; octx.setLineDash([5,4]);
+
+  if (S.tool === 'length' && vp.length === 1 && cur) {
+    octx.beginPath(); octx.moveTo(vp[0].x, vp[0].y); octx.lineTo(cur.x, cur.y); octx.stroke();
+    const d = pageDist(S.pts[0], {x:px,y:py});
+    lblDraw(octx, fmtLen(d), (vp[0].x+cur.x)/2, (vp[0].y+cur.y)/2-12, S.color);
+  }
+
+  if ((S.tool === 'area' || S.tool === 'rect') && vp.length >= 1) {
+    octx.beginPath(); octx.moveTo(vp[0].x, vp[0].y);
+    vp.slice(1).forEach(p => octx.lineTo(p.x, p.y));
+    if (cur) octx.lineTo(cur.x, cur.y);
+    if (S.tool === 'area') octx.lineTo(vp[0].x, vp[0].y);
+    octx.stroke();
     if (S.tool === 'area' && S.pts.length >= 2 && cur) {
-      const preview = [...S.pts, { x: mx, y: my }];
-      const a = polyArea(preview);
-      if (a > 0) {
-        const allCp = [...cp, cur];
-        const cx = allCp.reduce((s,p) => s+p.x, 0) / allCp.length;
-        const cy = allCp.reduce((s,p) => s+p.y, 0) / allCp.length;
-        lblDraw(octx, fmtArea(a), cx, cy, S.color);
-      }
+      const prev  = [...S.pts, {x:px,y:py}];
+      const a     = polyArea(prev);
+      const allVp = [...vp, cur];
+      const cx    = allVp.reduce((s,p)=>s+p.x,0)/allVp.length;
+      const cy    = allVp.reduce((s,p)=>s+p.y,0)/allVp.length;
+      if (a > 0) lblDraw(octx, fmtArea(a), cx, cy, S.color);
     }
   }
 
-  // vertex dots
   octx.setLineDash([]);
-  cp.forEach(p => {
-    octx.beginPath(); octx.arc(p.x, p.y, 5, 0, Math.PI*2);
-    octx.fillStyle = S.color; octx.fill();
-  });
+  vp.forEach(p => { octx.beginPath(); octx.arc(p.x, p.y, 5, 0, Math.PI*2); octx.fillStyle=S.color; octx.fill(); });
   octx.restore();
 }
 
 // ─── EXPORT ──────────────────────────────────────────────────────────────────
 function exportCSV() {
   if (!S.measurements.length) { alert('No measurements to export.'); return; }
-  const { u, s } = getScl();
-  let csv = 'Label,Page,Type,Value,Unit\n';
+  let csv = `Label,Page,Type,Value,Unit,Note\n`;
   S.measurements.forEach(m => {
-    if (m.type === 'length')
-      csv += `"${m.label}",${m.page+1},Length,${(m.wpx * s).toFixed(4)},${u}\n`;
-    else
-      csv += `"${m.label}",${m.page+1},Area,${(m.wpx2 * s * s).toFixed(4)},${u}²\n`;
+    let val, typ;
+    if (m.type === 'length') { val = toReal(m.ppx);    typ = 'Length'; }
+    else                      { val = toRealArea(m.ppx2); typ = m.type === 'rect' ? 'Rectangle' : 'Polygon'; }
+    const valStr = val !== null ? val.toFixed(4) : 'UNCALIBRATED';
+    const unit   = val !== null ? S.unit : '';
+    const note   = val !== null ? '' : 'Set scale to get values';
+    csv += `"${m.label}",${m.page+1},${typ},${valStr},${unit},"${note}"\n`;
   });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
@@ -1128,22 +1248,19 @@ function exportCSV() {
 }
 
 // ─── LOADING ─────────────────────────────────────────────────────────────────
-function showLoad(t) {
-  const el = document.getElementById('loadOvl');
-  document.getElementById('loadTxt').textContent = t;
-  el.style.display = 'flex';
-}
-function hideLoad() { document.getElementById('loadOvl').style.display = 'none'; }
+function showLoad(t) { document.getElementById('loadTxt').textContent = t; document.getElementById('loadOvl').style.display = 'flex'; }
+function hideLoad()  { document.getElementById('loadOvl').style.display = 'none'; }
 
 // ─── KEYBOARD ────────────────────────────────────────────────────────────────
 window.addEventListener('keydown', e => {
   if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
-  if (e.key === 'Escape')  { S.pts = []; updateFinishBtn(); redrawOverlay(); }
+  if (e.key === 'Escape') { S.pts = []; S.calibPts = []; if (S.tool==='calib') setTool('pan'); updateFinishBtn(); redrawOverlay(); }
   if (e.key === 'Enter' && S.tool === 'area' && S.pts.length >= 3) finishArea();
   if (e.key === '1') setTool('pan');
   if (e.key === '2') setTool('length');
   if (e.key === '3') setTool('area');
   if (e.key === '4') setTool('rect');
+  if (e.key === '5') setTool('calib');
   if (e.key === '+' || e.key === '=') doZoom(1.2);
   if (e.key === '-') doZoom(1/1.2);
   if (e.key === '0') resetView();
@@ -1161,11 +1278,10 @@ window.addEventListener('keydown', e => {
   }
 });
 
-document.getElementById('scaleIn').addEventListener('input',  renderSidebar);
-document.getElementById('unitIn').addEventListener('change', renderSidebar);
+document.getElementById('unitIn').addEventListener('change', onUnitChange);
 
-// show coords only on desktop
-if (!isMobile()) document.getElementById('coords').style.display = 'block';
+// close modals on backdrop click
+document.getElementById('calibModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeCalibModal(); });
 </script>
 </body>
 </html>
